@@ -5,7 +5,10 @@ from rest_framework import routers
 
 app_name = 'todo'
 
-urlpatterns =[]
+urlpatterns =[
+    path('', views.HomeView.as_view(), name='home'),
+    path('task/<int:task_id>/', views.Taskdetail.as_view(), name='task_detail'),
+]
 
 router = routers.SimpleRouter()
 router.register('task', views.TaskViewSet)

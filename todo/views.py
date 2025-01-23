@@ -6,10 +6,32 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .models import Task
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from django.views import View
+from .forms import TaslSearchForm
+from django.db.models import Q
 # Create your views here.
+
+class HomeView(View):
+    form_class = TaslSearchForm
+
+    def get(self, request):
+        tasks = Task.objects.all()
+        search_query = request.GET.get('search')
+        if search_query:
+            tasks = tasks.filter(Q(title__icontains=request.GET['search']) | 
+                                 Q(description__icontains=request.GET['search']))
+        return render(request, 'todo/home.html', {'tasks':tasks, 'form':self.form_class})
+    
+class Taskdetail(View):
+    def get(self, request, task_id):
+        task = Task.objects.get(id=task_id)
+        return render(request, 'todo/detail.html', {'task':task})    
+
 
 
 class TaskViewSet(viewsets.ViewSet):
+    #permission_classes = [IsAuthenticated,]
     queryset = Task.objects.all()
 
     def list(self, request):

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+    <p>{{ task.updated_at|date:"Y-M" }}</p>
+    <p>{{ task.description }}</p>
+{% endblock %}
