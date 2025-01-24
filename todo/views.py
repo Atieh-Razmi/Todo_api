@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.views import View
 from .forms import TaskSearchForm
 from django.db.models import Q
-
+from django.utils.dateparse import parse_date
 
 
 # DJANGO CODE
@@ -39,23 +39,23 @@ class TaskViewSet(viewsets.ViewSet):
     """
         CREATE, READ, UPDATE, DELETE ON TASKS
     """
-    #permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
         return Task.objects.all()
+    
     serializer_class = TaskSerializer
 
     def list(self, request):
 
         tasks = self.get_queryset()
-        due_date = request.GET.get('due_date') 
-        created_date = request.GET.get('created_date')
+        due_date = parse_date(request.GET.get("due_date") or "")
+        created_at = parse_date(request.GET.get("created_at") or "")
 
         if due_date:
-            tasks = tasks.filter(due_date=due_date)
-
-        if created_date:
-            tasks = tasks.filter(created_date=created_date)     
+            tasks = tasks.filter(due_date__date=due_date)
+        if created_at:
+            tasks = tasks.filter(created_at__date=created_at)
 
         srz_data = self.serializer_class(instance=tasks, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)

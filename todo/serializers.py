@@ -13,7 +13,7 @@ class TaskSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('due_date cannot be in the past.')
         return value    
     
-    def validate(self, data):
-        if data['due_date'] < data['created_at']:
-            raise serializers.ValidationError("due_date cannot be earlier than created.")
-        return data
+    # def validate(self, data):
+    #     if data['due_date'] < data['created_at']:
+    #         raise serializers.ValidationError("due_date cannot be earlier than created.")
+    #     return data
